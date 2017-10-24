@@ -4,7 +4,6 @@ const GitHubStrategy = require("passport-github").Strategy;
 const User = mongoose.model("User");
 
 module.exports = (passport, config) => {
-  // require('./initializer')
 
   // serialize sessions
   passport.serializeUser((user, done) => {

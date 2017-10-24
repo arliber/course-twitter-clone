@@ -18,18 +18,6 @@ module.exports = {
       callbackURL: "http://localhost:3000/auth/github/callback"
     }
   },
-  test: {
-    db: "mongodb://root:volvo76@ds039078.mongolab.com:39078/ntwitter",
-    root: rootPath,
-    app: {
-      name: "Nodejs Express Mongoose Demo"
-    },
-    github: {
-      clientID: "c2e0f478634366e1289d",
-      clientSecret: "0bfde82383deeb99b28d0f6a9eac001a0deb798a",
-      callbackURL: "http://localhost:3000/auth/github/callback"
-    }
-  },
   production: {
     db: DB,
     root: rootPath,

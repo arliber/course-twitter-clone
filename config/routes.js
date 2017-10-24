@@ -1,6 +1,5 @@
 module.exports = (app, passport, auth) => {
   const users = require("../app/controllers/users");
-  const apiv1 = require("../app/controllers/apiv1");
   const chat = require('../app/controllers/chat');
   const analytics = require("../app/controllers/analytics");
   const tweets = require("../app/controllers/tweets");
@@ -49,18 +48,13 @@ module.exports = (app, passport, auth) => {
   );
 
   /**
-   * API routes
-   */
-  app.get("/apiv1/tweets", apiv1.tweetList);
-  app.get("/apiv1/users", apiv1.usersList);
-
-  /**
    * Chat routes
    */
   app.get('/chat', auth.requiresLogin, chat.index);
   app.get('/chat/:id', auth.requiresLogin, chat.show);
   app.get('/chat/get/:userid', auth.requiresLogin, chat.getChat);
   app.post('/chats', auth.requiresLogin, chat.create);
+  
   /**
   * Analytics routes
   */
