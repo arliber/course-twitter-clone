@@ -23,25 +23,44 @@ function logAnalytics(req) {
   });
 }
 
-exports.signin = (req, res) => {};
-
-exports.authCallback = (req, res) => {
-  res.redirect("/");
-};
-
-exports.login = (req, res) => {
+exports.loginPage = (req, res) => {
   res.render("pages/login", {
     title: "Login",
     message: req.flash("error")
   });
 };
 
-exports.signup = (req, res) => {
-  res.render("pages/login", {
-    title: "Sign up",
-    user: new User()
-  });
+exports.loginDone = (req, res) => {
+  console.log('user', req.user, res.user);
+  res.redirect("/");
 };
+
+exports.signupPage = (req, res) => {
+  res.render("pages/signup");
+};
+
+exports.signupAction = (req, res, next) => {
+  logAnalytics(req);
+  const user = new User(req.body);
+  user.save()
+    .catch( error => {
+      var errors = [];
+      Object.keys(error.errors).forEach(function(key) {
+        errors.push(error.errors[key].message)
+      });
+      console.log(errors)
+      return res.render("pages/signup", { errors: errors, user: user });
+    })
+    .then( () => {
+      // return req.login(user); // TODO: Perform login after signup
+    })
+    .then( () => {
+      return res.redirect("/");
+    })
+    .catch( error => {
+      return next(error);
+    });
+}
 
 exports.logout = (req, res) => {
   logAnalytics(req);
@@ -53,33 +72,13 @@ exports.session = (req, res) => {
   res.redirect("/");
 };
 
-exports.create = (req, res, next) => {
-  logAnalytics(req);
-  const user = new User(req.body);
-  user.provider = "local";
-  user.save()
-    .catch( error => {
-      return res.render("pages/login", { errors: err.errors, user: user });
-    })
-    .then( () => {
-      return req.login(user);
-    })
-    .then( () => {
-      return res.redirect("/");
-    })
-    .catch( error => {
-      return next(error);
-    });
-}
-
 exports.list = (req, res) => {
   logAnalytics(req);
   const page = (req.param("page") > 0 ? req.param("page") : 1) - 1;
   const perPage = 5;
   const options = {
     perPage: perPage,
-    page: page,
-    criteria: {github: { $exists: true}},
+    page: page
   };
   let users, count;
   User.list(options)
@@ -167,7 +166,7 @@ function showFollowers(req, res, type) {
   let followerCount = user.followers.length;
   let userFollowers = User.find({ _id: { $in: followers } }).populate(
     "user",
-    "_id name username github"
+    "_id name username email profilePicture"
   );
 
 

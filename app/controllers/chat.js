@@ -27,8 +27,7 @@ exports.index = (req, res) => {
   const perPage = 50;
   const options = {
     perPage: perPage,
-    page: page,
-    criteria: {github: { $exists: true}},
+    page: page
   };
   let users, count, chats;
   User.list(options)

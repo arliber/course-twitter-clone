@@ -1,6 +1,6 @@
 .profile
   - if (user.github !== undefined)
-    img(class="profile__image", src=user.github.avatar_url)
+    img(class="profile__image", src=user.profilePicture)
   div.profile__user-info
     span.profile__handle
       - if (user.github !== undefined)

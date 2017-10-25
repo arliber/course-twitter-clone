@@ -2,17 +2,15 @@ const mongoose = require("mongoose");
 const Tweet = mongoose.model("Tweet");
 const Schema = mongoose.Schema;
 const crypto = require("crypto");
-const authTypes = ["github"];
+gravatar = require('gravatar');
 
-// ## Define UserSchema
+// Define UserSchema
 const UserSchema = new Schema({
   name: String,
   email: String,
   username: String,
-  provider: String,
   hashedPassword: String,
   salt: String,
-  github: {},
   followers: [{ type: Schema.ObjectId, ref: "User" }],
   following: [{ type: Schema.ObjectId, ref: "User" }],
   tweets: Number
@@ -28,41 +26,29 @@ UserSchema.virtual("password")
     return this._password;
   });
 
-const validatePresenceOf = value => value && value.length;
+UserSchema.virtual("profilePicture")
+  .get(function () {
+    return gravatar.url(this.email ? this.email.toLowerCase() : 'none', { s: '200' });
+  });
 
 UserSchema.path("name").validate(function(name) {
-  if (authTypes.indexOf(this.provider) !== -1) {
-    return true;
-  }
   return name.length;
 }, "Name cannot be blank");
 
 UserSchema.path("email").validate(function(email) {
-  if (authTypes.indexOf(this.provider) !== -1) {
-    return true;
-  }
   return email.length;
 }, "Email cannot be blank");
 
 UserSchema.path("username").validate(function(username) {
-  if (authTypes.indexOf(this.provider) !== -1) {
-    return true;
-  }
   return username.length;
 }, "username cannot be blank");
 
 UserSchema.path("hashedPassword").validate(function(hashedPassword) {
-  if (authTypes.indexOf(this.provider) !== -1) {
-    return true;
-  }
   return hashedPassword.length;
 }, "Password cannot be blank");
 
 UserSchema.pre("save", function(next) {
-  if (
-    !validatePresenceOf(this.password) &&
-    authTypes.indexOf(this.provider) === -1
-  ) {
+  if (!this.password || !this.password.length) {
     next(new Error("Invalid password"));
   } else {
     next();
@@ -94,7 +80,7 @@ UserSchema.statics = {
     return Tweet.find({ user: id }).count().exec(cb);
   },
   load: function(options, cb) {
-    options.select = options.select || "name username github";
+    options.select = options.select || "name username email profilePicture";
     return this.findOne(options.criteria).select(options.select).exec(cb);
   },
   list: function(options) {

@@ -79,7 +79,7 @@ TweetSchema.methods = {
         body: comment.body,
         user: user._id,
         commenterName: user.name,
-        commenterPicture: user.github.avatar_url,
+        commenterPicture: user.profilePicture,
       });
       this.save(cb);
     } else {
@@ -87,7 +87,7 @@ TweetSchema.methods = {
         body: comment.body,
         user: user._id,
         commenterName: user.username,
-        commenterPicture: user.github.avatar_url,
+        commenterPicture: user.profilePicture,
       });
 
       
@@ -111,7 +111,7 @@ TweetSchema.statics = {
   // Load tweets
   load: function(id, callback) {
     this.findOne({ _id: id })
-      .populate("user", "name username provider github")
+      .populate("user", "name username email profilePicture")
       .populate("comments.user")
       .exec(callback);
   },
@@ -119,7 +119,7 @@ TweetSchema.statics = {
   list: function(options) {
     const criteria = options.criteria || {};
     return this.find(criteria)
-      .populate("user", "name username provider github")
+      .populate("user", "name username email profilePicture")
       .sort({ createdAt: -1 })
       .limit(options.perPage)
       .skip(options.perPage * options.page);

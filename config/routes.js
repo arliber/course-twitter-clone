@@ -8,11 +8,19 @@ module.exports = (app, passport, auth) => {
   const follows = require("../app/controllers/follows");
 
   /**
-   * Main routes
+   * Home
    */
   app.get("/", auth.requiresLogin, tweets.index);
-  app.get("/login", users.login);
-  app.get("/signup", users.signup);
+
+  /**
+   * Authentication routes
+   */
+  app.get("/login", users.loginPage);
+  app.post("/login", passport.authenticate("local", { failureRedirect: "/login" }), users.loginDone);
+  
+  app.get("/signup", users.signupPage);
+  app.post("/signup", users.signupAction);
+  
   app.get("/logout", users.logout);
 
   /**
@@ -21,7 +29,7 @@ module.exports = (app, passport, auth) => {
   app.get("/users/:userId", users.show);
   app.get("/users/:userId/followers", users.showFollowers);
   app.get("/users/:userId/following", users.showFollowing);
-  app.post("/users", users.create);
+  //app.post("/users", users.create); // TODO: WTF?
   app.post(
     "/users/sessions",
     passport.authenticate("local", {
@@ -33,19 +41,16 @@ module.exports = (app, passport, auth) => {
   app.post("/users/:userId/follow", auth.requiresLogin, follows.follow);
   app.param("userId", users.user);
 
-  /**
-   * Authentication routes
-   */
-  app.get(
-    "/auth/github",
-    passport.authenticate("github", { failureRedirect: "/login" }),
-    users.signin
-  );
-  app.get(
-    "/auth/github/callback",
-    passport.authenticate("github", { failureRedirect: "/login" }),
-    users.authCallback
-  );
+  
+exports.logout = (req, res) => {
+  logAnalytics(req);
+  req.logout();
+  res.redirect("/login");
+};
+
+exports.session = (req, res) => {
+  res.redirect("/");
+};
 
   /**
    * Chat routes

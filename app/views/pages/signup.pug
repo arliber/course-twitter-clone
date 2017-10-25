@@ -1,0 +1,28 @@
+extends ../layouts/default
+
+block content
+  .row 
+    .col-md-4.login-container
+      h1 Signup
+
+      form.center.form-inline.confirm.settings-tweet(action="/signup", method="post")
+        div.form-group
+          label(for="username") Name
+          input.form-control(name="name", placeholder="Enter full name")
+        div.form-group
+          label(for="username") Username
+          input.form-control(name="username", placeholder="Enter username")
+          small.orm-text.text-muted Pick something unique
+        div.form-group
+          label(for="username") Email
+          input.form-control(name="email", placeholder="Enter email address", type="email")
+        div.form-group
+          label(for="password") Password
+          input.form-control(name="password", placeholder="Enter password")
+
+          button.btn.btn-danger(type="submit") Register
+
+      if (typeof errors !== 'undefined')
+        ul
+          each error in errors
+            li= error
