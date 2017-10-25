@@ -5,6 +5,7 @@ Node twitter was an effort to rewrite some of Twitter's functionality using mode
 javascript based toolchain made by [Vinit Kumar](https://avatars0.githubusercontent.com/u/537678?v=3&s=144) and [Robert Cooper](https://avatars0.githubusercontent.com/u/16786990?v=3&s=144).
 Adopted for personal usage in my course [Arik Liber](github.com/LeonLiber/).
 
+[Original version](https://github.com/vinitkumar/node-twitter) and [another nice implementation](https://github.com/tatsuyaoiw/twitter)
 
 
 ## Prerequisites
